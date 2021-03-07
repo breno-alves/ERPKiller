@@ -31,7 +31,7 @@ describe('Users', () => {
 
       const user = await createUser.execute({
         name: 'John Doe',
-        email: 'johndoe@example.com',
+        email: 'johndoe@erpkiller.com',
         password: '123123',
         birthday: new Date(1995, 10, 10),
         gender: 'male',
@@ -40,12 +40,12 @@ describe('Users', () => {
       expect(typeof user).toBe('object');
       expect(Object.keys(user)).toEqual(
         expect.arrayContaining([
+          'id',
           'email',
           'name',
           'avatarUrl',
           'birthday',
           'gender',
-          'id',
           'created_at',
           'updated_at',
         ]),
@@ -57,7 +57,7 @@ describe('Users', () => {
 
       await createUser.execute({
         name: 'John Doe',
-        email: 'johndoe2@example.com',
+        email: 'johndoe2@erpkiller.com',
         password: '123123',
         birthday: new Date(1995, 10, 10),
         gender: 'male',
@@ -66,7 +66,7 @@ describe('Users', () => {
       expect(
         createUser.execute({
           name: 'John Doe',
-          email: 'johndoe2@example.com',
+          email: 'johndoe2@erpkiller.com',
           password: '123123',
           birthday: new Date(1995, 10, 10),
           gender: 'male',
