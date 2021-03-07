@@ -1,0 +1,50 @@
+version: '3.3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: always
+    depends_on:
+      - db
+      - db_test
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/usr/app/
+      - /usr/app/node_modules
+    networks:
+      - erpkiller-network
+
+  db:
+    container_name: 'erpkiller_db'
+    image: postgres
+    environment:
+      POSTGRES_DB: erpkiller_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - erpkiller_pg_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - erpkiller-network
+
+  db_test:
+    container_name: 'erpkiller_db_test'
+    image: postgres
+    environment:
+      POSTGRES_DB: erpkiller_db_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5433:5432
+    networks:
+      - erpkiller-network
+
+networks:
+  erpkiller-network:
+
+volumes:
+  erpkiller_pg_data:
