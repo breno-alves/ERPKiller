@@ -2,8 +2,6 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
 import CreateUserService from '@modules/users/services/CreateUserService';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
-import AppError from '@shared/errors/AppError';
 
 import UsersRepository from '../typeorm/repositories/UsersRepository';
 
@@ -26,15 +24,11 @@ class UsersController {
   }
 
   public async index(request: Request, response: Response): Promise<Response> {
-    const { id, email } = request.body;
-
-    if (!id && !email) {
-      throw new AppError('Must provide id or email');
-    }
+    const { id } = request.user;
 
     const usersRepository = new UsersRepository();
 
-    const user = await usersRepository.find({ id, email });
+    const user = await usersRepository.find({ id });
 
     return response.json({ ...user, password: undefined });
   }
