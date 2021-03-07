@@ -7,9 +7,17 @@ import UsersRepository from '@modules/users/infra/typeorm/repositories/UsersRepo
 
 import CreateUserService from '@modules/users/services/CreateUserService';
 
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IHashProvider from '@modules/users/providers/HashProvider/models/IHashProvider';
+
 describe('Users', () => {
+  let usersRepository: IUsersRepository;
+  let hashProvider: IHashProvider;
+
   beforeAll(async () => {
     await connection.create();
+    usersRepository = new UsersRepository();
+    hashProvider = new HashProvider();
   });
 
   afterAll(async () => {
@@ -19,9 +27,6 @@ describe('Users', () => {
 
   describe('CreateUser', () => {
     it('Should be able to create a new user', async () => {
-      const usersRepository = new UsersRepository();
-      const hashProvider = new HashProvider();
-
       const createUser = new CreateUserService(usersRepository, hashProvider);
 
       const user = await createUser.execute({
@@ -32,13 +37,22 @@ describe('Users', () => {
         gender: 'male',
       });
 
-      expect(user).toHaveProperty('id');
+      expect(typeof user).toBe('object');
+      expect(Object.keys(user)).toEqual(
+        expect.arrayContaining([
+          'email',
+          'name',
+          'avatarUrl',
+          'birthday',
+          'gender',
+          'id',
+          'created_at',
+          'updated_at',
+        ]),
+      );
     });
 
     it('Should not be able to create a new user with a used email', async () => {
-      const usersRepository = new UsersRepository();
-      const hashProvider = new HashProvider();
-
       const createUser = new CreateUserService(usersRepository, hashProvider);
 
       await createUser.execute({
